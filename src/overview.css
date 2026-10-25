@@ -1,0 +1,456 @@
+.ov {
+  display: grid;
+  gap: 18px;
+}
+
+.ov .ov-head {
+  margin-bottom: 2px;
+}
+
+.ov .ov-date {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ov .ov-title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.ov .ov-biz {
+  margin: 4px 0 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* ---------- Hero ---------- */
+
+.ov .ov-hero {
+  padding: 22px 20px;
+  color: var(--paper);
+  background: var(--charcoal);
+  border-left: 4px solid var(--lime);
+}
+
+.ov .ov-hero-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a9a89c;
+}
+
+.ov .ov-hero-amount {
+  margin: 0;
+  font-size: clamp(34px, 11vw, 52px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  font-variant-numeric: tabular-nums;
+}
+
+.ov .ov-hero-amount small {
+  margin-right: 8px;
+  font-size: 0.38em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #a9a89c;
+}
+
+.ov .ov-hero-sub {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: #c9c8bd;
+}
+
+.ov .ov-chip {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.ov .ov-chip.bad {
+  color: #ffb4a8;
+  background: #3b1f1c;
+  border-color: #6b2f28;
+}
+
+.ov .ov-chip.good {
+  color: var(--lime);
+  background: #232619;
+  border-color: #3d4326;
+}
+
+/* ---------- Figures ---------- */
+
+.ov .ov-kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ov .ov-kpi {
+  padding: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.ov .ov-kpi-label {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ov .ov-kpi-value {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.ov .ov-kpi-sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Cards ---------- */
+
+.ov .ov-card {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.ov .ov-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ov .ov-h {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ov .ov-link {
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ov .ov-empty-note {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Chart ---------- */
+
+.ov .ov-legend {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ov .ov-legend span::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.ov .ov-legend .l-inv::before {
+  background: #d3cfc0;
+}
+
+.ov .ov-legend .l-col::before {
+  background: var(--charcoal);
+}
+
+.ov .ov-chart {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  align-items: end;
+  height: 150px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ov .ov-col {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+}
+
+.ov .ov-bar {
+  width: 38%;
+  max-width: 22px;
+  min-height: 2px;
+}
+
+.ov .ov-bar.inv {
+  background: #d3cfc0;
+}
+
+.ov .ov-bar.col {
+  background: var(--charcoal);
+}
+
+.ov .ov-bar.zero {
+  min-height: 0;
+  background: transparent;
+}
+
+.ov .ov-col-label {
+  position: absolute;
+  bottom: -22px;
+  left: 0;
+  right: 0;
+  font-size: 11px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.ov .ov-col.now .ov-col-label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ---------- Lists ---------- */
+
+.ov .ov-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ov .ov-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 0;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.ov li:first-child .ov-row {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ov .ov-row:hover strong {
+  text-decoration: underline;
+}
+
+.ov .ov-row:focus-visible,
+.ov .ov-link:focus-visible,
+.ov .ov-act:focus-visible,
+.ov .ov-do:focus-visible {
+  outline: 2px solid var(--charcoal);
+  outline-offset: 2px;
+}
+
+.ov .ov-row-main,
+.ov .ov-row-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ov .ov-row-side {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.ov .ov-row-main span,
+.ov .ov-row-side span {
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ov .ov-row-side .late {
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.ov .ov-row strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Quick actions ---------- */
+
+.ov .ov-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ov .ov-act {
+  padding: 13px 10px;
+  font-weight: 600;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.ov .ov-act:first-child {
+  color: var(--charcoal);
+  background: var(--lime);
+  border-color: var(--lime);
+}
+
+.ov .ov-act:hover {
+  border-color: var(--charcoal);
+}
+
+/* ---------- Checklist ---------- */
+
+.ov .ov-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ov .ov-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+}
+
+.ov .ov-step:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ov .ov-box {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--charcoal);
+}
+
+.ov .ov-step.done .ov-box {
+  background: var(--lime);
+}
+
+.ov .ov-step.done .ov-box::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--charcoal);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.ov .ov-step-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.ov .ov-step.done .ov-step-text {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.ov .ov-do {
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--charcoal);
+  border: 0;
+  cursor: pointer;
+}
+
+.ov .ov-welcome {
+  padding: 24px 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--lime);
+}
+
+.ov .ov-welcome h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.ov .ov-welcome p {
+  margin: 0 0 16px;
+  line-height: 1.55;
+}
+
+.ov .ov-foot {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (min-width: 640px) {
+  .ov .ov-kpis {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .ov .ov-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .ov .ov-bar {
+    max-width: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ov .ov-bar {
+    transition: height 0.4s ease;
+  }
+}
