@@ -1,0 +1,51 @@
+.biz-form {
+  max-width: 520px;
+}
+
+.biz-form label {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.biz-form label > span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.biz-form input,
+.biz-form select,
+.biz-form textarea {
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.biz-form input:focus-visible,
+.biz-form select:focus-visible,
+.biz-form textarea:focus-visible {
+  outline: none;
+  border-color: var(--charcoal);
+  box-shadow: 0 0 0 3px rgba(198, 244, 50, 0.55);
+}
+
+.biz-form textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.biz-form .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.biz-form .btn-primary {
+  margin-top: 8px;
+}
