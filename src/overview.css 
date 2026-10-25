@@ -1,8 +1,26 @@
+/* ==========================================================================
+   Dashboard Overview Component (.ov)
+   ========================================================================== */
+
+:root {
+  /* Default Fallback Theme Variables (Override in your main stylesheet) */
+  --muted: #6e6e6e;
+  --paper: #ffffff;
+  --charcoal: #1c1c1a;
+  --lime: #d2f254;
+  --line: #e2e2dc;
+  --text: #1a1a1a;
+  --danger: #d9381e;
+}
+
+/* Base Layout Container
+   ========================================================================== */
 .ov {
   display: grid;
   gap: 18px;
 }
 
+/* Header */
 .ov .ov-head {
   margin-bottom: 2px;
 }
@@ -18,6 +36,7 @@
   font-size: 30px;
   line-height: 1.1;
   letter-spacing: -0.015em;
+  color: var(--text);
 }
 
 .ov .ov-biz {
@@ -26,12 +45,12 @@
   color: var(--muted);
 }
 
-/* ---------- Hero ---------- */
-
+/* Hero Section
+   ========================================================================== */
 .ov .ov-hero {
   padding: 22px 20px;
   color: var(--paper);
-  background: var(--charcoal);
+  background-color: var(--charcoal);
   border-left: 4px solid var(--lime);
 }
 
@@ -74,32 +93,32 @@
   padding: 5px 10px;
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid;
+  border: 1px solid transparent;
 }
 
 .ov .ov-chip.bad {
   color: #ffb4a8;
-  background: #3b1f1c;
+  background-color: #3b1f1c;
   border-color: #6b2f28;
 }
 
 .ov .ov-chip.good {
   color: var(--lime);
-  background: #232619;
+  background-color: #232619;
   border-color: #3d4326;
 }
 
-/* ---------- Figures ---------- */
-
+/* KPI Key Metrics
+   ========================================================================== */
 .ov .ov-kpis {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
 .ov .ov-kpi {
   padding: 14px;
-  background: #fff;
+  background-color: #ffffff;
   border: 1px solid var(--line);
 }
 
@@ -128,11 +147,11 @@
   color: var(--muted);
 }
 
-/* ---------- Cards ---------- */
-
+/* Base Cards
+   ========================================================================== */
 .ov .ov-card {
   padding: 16px;
-  background: #fff;
+  background-color: #ffffff;
   border: 1px solid var(--line);
 }
 
@@ -148,6 +167,7 @@
   margin: 0;
   font-size: 15px;
   font-weight: 700;
+  color: var(--text);
 }
 
 .ov .ov-link {
@@ -167,8 +187,8 @@
   color: var(--muted);
 }
 
-/* ---------- Chart ---------- */
-
+/* Chart Visualizations
+   ========================================================================== */
 .ov .ov-legend {
   display: flex;
   gap: 16px;
@@ -187,11 +207,11 @@
 }
 
 .ov .ov-legend .l-inv::before {
-  background: #d3cfc0;
+  background-color: #d3cfc0;
 }
 
 .ov .ov-legend .l-col::before {
-  background: var(--charcoal);
+  background-color: var(--charcoal);
 }
 
 .ov .ov-chart {
@@ -220,16 +240,16 @@
 }
 
 .ov .ov-bar.inv {
-  background: #d3cfc0;
+  background-color: #d3cfc0;
 }
 
 .ov .ov-bar.col {
-  background: var(--charcoal);
+  background-color: var(--charcoal);
 }
 
 .ov .ov-bar.zero {
   min-height: 0;
-  background: transparent;
+  background-color: transparent;
 }
 
 .ov .ov-col-label {
@@ -247,8 +267,8 @@
   color: var(--text);
 }
 
-/* ---------- Lists ---------- */
-
+/* Interactive Data Lists
+   ========================================================================== */
 .ov .ov-list {
   margin: 0;
   padding: 0;
@@ -272,20 +292,12 @@
 }
 
 .ov li:first-child .ov-row {
-  border-top: 0;
   padding-top: 0;
+  border-top: 0;
 }
 
 .ov .ov-row:hover strong {
   text-decoration: underline;
-}
-
-.ov .ov-row:focus-visible,
-.ov .ov-link:focus-visible,
-.ov .ov-act:focus-visible,
-.ov .ov-do:focus-visible {
-  outline: 2px solid var(--charcoal);
-  outline-offset: 2px;
 }
 
 .ov .ov-row-main,
@@ -318,11 +330,11 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Quick actions ---------- */
-
+/* Quick Action Grid
+   ========================================================================== */
 .ov .ov-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
@@ -330,14 +342,15 @@
   padding: 13px 10px;
   font-weight: 600;
   color: var(--text);
-  background: #fff;
+  background-color: #ffffff;
   border: 1px solid var(--line);
   cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .ov .ov-act:first-child {
   color: var(--charcoal);
-  background: var(--lime);
+  background-color: var(--lime);
   border-color: var(--lime);
 }
 
@@ -345,8 +358,8 @@
   border-color: var(--charcoal);
 }
 
-/* ---------- Checklist ---------- */
-
+/* Onboarding & Task Checklists
+   ========================================================================== */
 .ov .ov-steps {
   margin: 0;
   padding: 0;
@@ -362,8 +375,8 @@
 }
 
 .ov .ov-step:first-child {
-  border-top: 0;
   padding-top: 0;
+  border-top: 0;
 }
 
 .ov .ov-box {
@@ -375,7 +388,7 @@
 }
 
 .ov .ov-step.done .ov-box {
-  background: var(--lime);
+  background-color: var(--lime);
 }
 
 .ov .ov-step.done .ov-box::after {
@@ -407,14 +420,14 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--paper);
-  background: var(--charcoal);
+  background-color: var(--charcoal);
   border: 0;
   cursor: pointer;
 }
 
 .ov .ov-welcome {
   padding: 24px 20px;
-  background: #fff;
+  background-color: #ffffff;
   border: 1px solid var(--line);
   border-left: 4px solid var(--lime);
 }
@@ -422,11 +435,13 @@
 .ov .ov-welcome h2 {
   margin: 0 0 8px;
   font-size: 22px;
+  color: var(--text);
 }
 
 .ov .ov-welcome p {
   margin: 0 0 16px;
   line-height: 1.55;
+  color: var(--text);
 }
 
 .ov .ov-foot {
@@ -435,6 +450,18 @@
   color: var(--muted);
 }
 
+/* Accessibility & Focus Indicators
+   ========================================================================== */
+.ov .ov-row:focus-visible,
+.ov .ov-link:focus-visible,
+.ov .ov-act:focus-visible,
+.ov .ov-do:focus-visible {
+  outline: 2px solid var(--charcoal);
+  outline-offset: 2px;
+}
+
+/* Responsive & Animation Adjustments
+   ========================================================================== */
 @media (min-width: 640px) {
   .ov .ov-kpis {
     grid-template-columns: repeat(4, 1fr);
