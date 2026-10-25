@@ -4,6 +4,7 @@ import AuthForm from './AuthForm.jsx';
 import BusinessProfile from './BusinessProfile.jsx';
 import Customers from './Customers.jsx';
 import Invoices from './Invoices.jsx';
+import DeliveryNotes from './DeliveryNotes.jsx';
 
 const sections = ['Overview', 'Invoices', 'Quotations', 'Delivery notes', 'Customers', 'Business'];
 
@@ -70,6 +71,8 @@ function Dashboard({ email }) {
           <Customers />
         ) : active === 'Invoices' ? (
           <Invoices />
+        ) : active === 'Delivery notes' ? (
+          <DeliveryNotes />
         ) : active === 'Overview' ? (
           <p>Signed in as {email}.</p>
         ) : (
