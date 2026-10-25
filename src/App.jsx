@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase, supabaseReady } from './supabase.js';
 import AuthForm from './AuthForm.jsx';
 import BusinessProfile from './BusinessProfile.jsx';
+import Customers from './Customers.jsx';
 
 const sections = ['Overview', 'Invoices', 'Quotations', 'Delivery notes', 'Customers', 'Business'];
 
@@ -64,6 +65,8 @@ function Dashboard({ email }) {
         <h1>{active}</h1>
         {active === 'Business' ? (
           <BusinessProfile />
+        ) : active === 'Customers' ? (
+          <Customers />
         ) : active === 'Overview' ? (
           <p>Signed in as {email}.</p>
         ) : (
