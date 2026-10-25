@@ -4,9 +4,18 @@ import AuthForm from './AuthForm.jsx';
 import BusinessProfile from './BusinessProfile.jsx';
 import Customers from './Customers.jsx';
 import Invoices from './Invoices.jsx';
+import Payments from './Payments.jsx';
 import DeliveryNotes from './DeliveryNotes.jsx';
 
-const sections = ['Overview', 'Invoices', 'Quotations', 'Delivery notes', 'Customers', 'Business'];
+const sections = [
+  'Overview',
+  'Invoices',
+  'Payments',
+  'Quotations',
+  'Delivery notes',
+  'Customers',
+  'Business',
+];
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -71,6 +80,8 @@ function Dashboard({ email }) {
           <Customers />
         ) : active === 'Invoices' ? (
           <Invoices />
+        ) : active === 'Payments' ? (
+          <Payments />
         ) : active === 'Delivery notes' ? (
           <DeliveryNotes />
         ) : active === 'Overview' ? (
@@ -91,4 +102,4 @@ function Dashboard({ email }) {
       </main>
     </div>
   );
-}
+} 
