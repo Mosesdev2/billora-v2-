@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from './supabase.js';
 import './business.css';
 import './invoices.css';
+import InvoiceDocument from './InvoiceDocument.jsx';
 
 const PAGE = 20;
 
@@ -79,6 +80,10 @@ export default function Invoices() {
   if (!ready) return <p>Loading...</p>;
   if (!biz) return <p>Create your business profile first (Business tab), then create invoices here.</p>;
 
+  if (view === 'doc') {
+    return <InvoiceDocument bizId={biz.id} id={editId} onBack={() => setView('list')} />;
+  }
+
   if (view === 'form') {
     return (
       <InvoiceForm
@@ -120,7 +125,7 @@ export default function Invoices() {
           {rows.map((r) => {
             const l = label(r);
             return (
-              <li key={r.id}>
+              <li key={r.id} className="inv-li">
                 <button
                   type="button"
                   className="inv-row"
@@ -143,6 +148,17 @@ export default function Invoices() {
                     </strong>
                     <em className={'badge ' + l}>{l}</em>
                   </span>
+                </button>
+                <button
+                  type="button"
+                  className="btn-ghost small"
+                  onClick={() => {
+                    setEditId(r.id);
+                    setMsg(null);
+                    setView('doc');
+                  }}
+                >
+                  PDF
                 </button>
               </li>
             );
