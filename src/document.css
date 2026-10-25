@@ -6,192 +6,229 @@
   margin-bottom: 16px;
 }
 
-.doc-bar .swatches {
+.doc-bar .chips {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
   align-items: center;
-}
-
-.swatch {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 2px solid #fff;
-  outline: 1px solid var(--line);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.swatch.on {
-  outline: 2px solid var(--charcoal);
-}
-
-.doc-bar input[type='color'] {
-  width: 36px;
-  height: 32px;
-  padding: 0;
-  background: none;
+  gap: 6px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  background: #fff;
   border: 1px solid var(--line);
+  border-radius: 2px;
   cursor: pointer;
 }
+
+.chip i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.chip.on {
+  border-color: var(--charcoal);
+  box-shadow: 0 0 0 2px rgba(198, 244, 50, 0.7);
+}
+
+/* ---------- The invoice sheet ---------- */
 
 .doc-sheet {
+  --ink: #1f3fae;
   max-width: 760px;
   margin: 0 auto;
+  padding: 20px 16px 16px;
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.4;
   color: #1c1d19;
   background: #fff;
   border: 1px solid var(--line);
 }
 
-.doc-sheet p {
+.content .doc-sheet p {
   margin: 0;
   color: inherit;
 }
 
 .doc-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 24px;
-  color: var(--on-accent);
-  background: var(--accent);
+  padding-bottom: 10px;
+  text-align: center;
+  border-bottom: 2px solid var(--ink);
+}
+
+.doc-pill {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 24px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 6px;
 }
 
 .doc-biz {
-  margin: 0 0 6px;
-  font-size: 22px;
-  line-height: 1.15;
+  margin: 0;
+  font-size: clamp(20px, 6.5vw, 38px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  overflow-wrap: anywhere;
 }
 
-.doc-small {
+.content .doc-sheet .doc-line {
+  margin-top: 5px;
   white-space: pre-line;
-  opacity: 0.9;
 }
 
-.doc-title {
+.doc-boxes {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.doc-box {
+  padding: 4px 12px 2px;
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+}
+
+.doc-row {
+  display: flex;
+  gap: 6px;
+  min-height: 28px;
+  padding: 6px 0 3px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.doc-row:last-child {
+  border-bottom: 0;
+}
+
+.doc-row b {
+  flex: none;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.doc-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.doc-row .cap {
+  text-transform: capitalize;
+}
+
+.doc-grid-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+}
+
+.doc-grid {
+  width: calc(100% + 2px);
+  margin: -1px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.doc-grid th,
+.doc-grid td {
+  height: 28px;
+  padding: 4px 6px;
+  vertical-align: middle;
+  border: 1px solid var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.doc-grid th {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink);
+}
+
+.doc-grid .r {
   text-align: right;
 }
 
-.doc-title strong {
-  display: block;
-  font-size: 20px;
-  letter-spacing: 0.12em;
+.doc-grid .c {
+  text-align: center;
 }
 
-.doc-title span {
-  display: block;
-  margin-top: 4px;
+.doc-grid .lbl {
+  font-weight: 600;
+  text-align: right;
+  color: var(--ink);
+}
+
+.doc-grid .small {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-grid .total td {
+  font-weight: 700;
+  border-top: 2px solid var(--ink);
+}
+
+.doc-grid .balance td {
+  font-weight: 700;
+}
+
+.doc-grid .no {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #c0201f;
 }
 
 .doc-stamp {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 2px 10px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  padding: 4px 22px;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  border: 2px solid currentColor;
+  color: var(--ink);
+  border: 4px solid var(--ink);
+  border-radius: 8px;
+  opacity: 0.35;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  pointer-events: none;
 }
 
-.doc-body {
-  padding: 24px;
-}
-
-.doc-meta {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.doc-meta h4 {
-  margin: 0 0 4px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #6b6a62;
-}
-
-.doc-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.doc-table th {
-  padding: 8px;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-align: left;
-  text-transform: uppercase;
-  color: var(--on-accent);
-  background: var(--accent);
-}
-
-.doc-table td {
-  padding: 10px 8px;
-  vertical-align: top;
-  border-bottom: 1px solid #e6e3d8;
-}
-
-.doc-table .num {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.doc-totals {
-  width: 100%;
-  max-width: 300px;
-  margin: 16px 0 0 auto;
-}
-
-.doc-totals .line {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-}
-
-.doc-totals .grand {
-  margin-top: 6px;
-  padding: 10px 8px;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--on-accent);
-  background: var(--accent);
-}
-
-.doc-notes {
-  margin-top: 24px;
-  padding-top: 12px;
-  border-top: 1px solid #e6e3d8;
+.content .doc-sheet .doc-notes {
+  margin-top: 12px;
   white-space: pre-line;
 }
 
 .doc-foot {
-  padding: 14px 24px;
+  margin-top: 12px;
   font-size: 12px;
   text-align: center;
-  color: #6b6a62;
-  border-top: 1px solid #e6e3d8;
+  color: var(--ink);
 }
 
 @media (max-width: 520px) {
-  .doc-head {
-    flex-direction: column;
-  }
-
-  .doc-title {
-    text-align: left;
-  }
-
-  .doc-meta {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .doc-meta > :first-child {
-    grid-column: 1 / -1;
+  .doc-boxes {
+    grid-template-columns: 1fr;
   }
 }
 
