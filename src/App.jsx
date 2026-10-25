@@ -7,15 +7,17 @@ import Customers from './Customers.jsx';
 import Invoices from './Invoices.jsx';
 import Payments from './Payments.jsx';
 import DeliveryNotes from './DeliveryNotes.jsx';
+import Icon from './Icon.jsx';
+import './shell.css';
 
 const sections = [
-  'Overview',
-  'Invoices',
-  'Payments',
-  'Quotations',
-  'Delivery notes',
-  'Customers',
-  'Business',
+  { name: 'Overview', icon: 'overview' },
+  { name: 'Invoices', icon: 'invoices' },
+  { name: 'Payments', icon: 'payments' },
+  { name: 'Quotations', icon: 'quotations' },
+  { name: 'Delivery notes', icon: 'delivery' },
+  { name: 'Customers', icon: 'customers' },
+  { name: 'Business', icon: 'business' },
 ];
 
 export default function App() {
@@ -54,60 +56,97 @@ export default function App() {
 
 function Dashboard({ email }) {
   const [active, setActive] = useState('Overview');
+  const [menu, setMenu] = useState(false);
 
   function go(name) {
     setActive(name);
+    setMenu(false);
     window.scrollTo({ top: 0 });
   }
 
+  const initial = (email || '?').charAt(0).toUpperCase();
+  const label = (email || '').split('@')[0];
+
   return (
-    <div className="app">
-      <header className="topbar">
-        <strong className="brand">Billora</strong>
-        <nav className="nav">
-          {sections.map((name) => (
+    <div className="shell">
+      <header className="tb">
+        <div className="tb-brand">
+          <span className="tb-logo">
+            <Icon name="invoices" size={18} />
+          </span>
+          Billora
+        </div>
+
+        <div className="tb-user">
+          <button
+            type="button"
+            className="tb-avatar-btn"
+            aria-haspopup="true"
+            aria-expanded={menu}
+            onClick={() => setMenu(!menu)}
+          >
+            <span className="tb-avatar">{initial}</span>
+            <span className="tb-name">{label}</span>
+            <Icon name="chevron" size={16} />
+          </button>
+          {menu && (
+            <>
+              <button
+                type="button"
+                className="tb-scrim"
+                aria-label="Close menu"
+                onClick={() => setMenu(false)}
+              />
+              <div className="tb-menu">
+                <p>{email}</p>
+                <button type="button" onClick={() => supabase.auth.signOut()}>
+                  Sign out
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </header>
+
+      <div className="shell-body">
+        <nav className="sb" aria-label="Main">
+          {sections.map((s) => (
             <button
-              key={name}
+              key={s.name}
               type="button"
-              className={name === active ? 'nav-btn is-active' : 'nav-btn'}
-              onClick={() => go(name)}
+              className={s.name === active ? 'sb-item on' : 'sb-item'}
+              aria-current={s.name === active ? 'page' : undefined}
+              onClick={() => go(s.name)}
             >
-              {name}
+              <Icon name={s.icon} size={18} />
+              {s.name}
             </button>
           ))}
         </nav>
-      </header>
 
-      <main className="content">
-        {active !== 'Overview' && <h1>{active}</h1>}
-        {active === 'Overview' ? (
-          <Overview key="overview" email={email} onNavigate={go} />
-        ) : active === 'Business' ? (
-          <BusinessProfile />
-        ) : active === 'Customers' ? (
-          <Customers />
-        ) : active === 'Invoices' ? (
-          <Invoices />
-        ) : active === 'Payments' ? (
-          <Payments />
-        ) : active === 'Delivery notes' ? (
-          <DeliveryNotes />
-        ) : (
-          <p>{active} will be built here soon.</p>
-        )}
-        {active !== 'Overview' && (
-          <p>
-            <button
-              className="nav-btn"
-              style={{ color: 'inherit', borderColor: '#999' }}
-              type="button"
-              onClick={() => supabase.auth.signOut()}
-            >
-              Sign out
-            </button>
-          </p>
-        )}
-      </main>
+        <main className="main">
+          {active === 'Overview' ? (
+            <Overview key="overview" onNavigate={go} />
+          ) : (
+            <div className="content">
+              <h1>{active}</h1>
+              {active === 'Business' ? (
+                <BusinessProfile />
+              ) : active === 'Customers' ? (
+                <Customers />
+              ) : active === 'Invoices' ? (
+                <Invoices />
+              ) : active === 'Payments' ? (
+                <Payments />
+              ) : active === 'Delivery notes' ? (
+                <DeliveryNotes />
+              ) : (
+                <p>{active} will be built here soon.</p>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
