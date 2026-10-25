@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, supabaseReady } from './supabase.js';
 import AuthForm from './AuthForm.jsx';
+import Overview from './Overview.jsx';
 import BusinessProfile from './BusinessProfile.jsx';
 import Customers from './Customers.jsx';
 import Invoices from './Invoices.jsx';
@@ -54,6 +55,11 @@ export default function App() {
 function Dashboard({ email }) {
   const [active, setActive] = useState('Overview');
 
+  function go(name) {
+    setActive(name);
+    window.scrollTo({ top: 0 });
+  }
+
   return (
     <div className="app">
       <header className="topbar">
@@ -64,7 +70,7 @@ function Dashboard({ email }) {
               key={name}
               type="button"
               className={name === active ? 'nav-btn is-active' : 'nav-btn'}
-              onClick={() => setActive(name)}
+              onClick={() => go(name)}
             >
               {name}
             </button>
@@ -73,8 +79,10 @@ function Dashboard({ email }) {
       </header>
 
       <main className="content">
-        <h1>{active}</h1>
-        {active === 'Business' ? (
+        {active !== 'Overview' && <h1>{active}</h1>}
+        {active === 'Overview' ? (
+          <Overview key="overview" email={email} onNavigate={go} />
+        ) : active === 'Business' ? (
           <BusinessProfile />
         ) : active === 'Customers' ? (
           <Customers />
@@ -84,22 +92,22 @@ function Dashboard({ email }) {
           <Payments />
         ) : active === 'Delivery notes' ? (
           <DeliveryNotes />
-        ) : active === 'Overview' ? (
-          <p>Signed in as {email}.</p>
         ) : (
           <p>{active} will be built here soon.</p>
         )}
-        <p>
-          <button
-            className="nav-btn"
-            style={{ color: 'inherit', borderColor: '#999' }}
-            type="button"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Sign out
-          </button>
-        </p>
+        {active !== 'Overview' && (
+          <p>
+            <button
+              className="nav-btn"
+              style={{ color: 'inherit', borderColor: '#999' }}
+              type="button"
+              onClick={() => supabase.auth.signOut()}
+            >
+              Sign out
+            </button>
+          </p>
+        )}
       </main>
     </div>
   );
-} 
+}
