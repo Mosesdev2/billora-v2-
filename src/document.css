@@ -272,4 +272,14 @@
     display: none !important;
   }
 }
+.doc-grid th {
+  padding-left: 2px;
+  padding-right: 2px;
+  white-space: nowrap;
+}
+
+.doc-grid td.c {
+  padding-left: 2px;
+  padding-right: 2px;
+}
   
