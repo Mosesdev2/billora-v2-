@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
-import './invoices.css';
+import Icon from './Icon.jsx';
 import './overview.css';
 
 const num = (n) => Number(n || 0);
@@ -21,11 +21,6 @@ function todayISO() {
   return d.toISOString().slice(0, 10);
 }
 
-function daysLate(due) {
-  const ms = new Date(todayISO() + 'T00:00:00') - new Date(due + 'T00:00:00');
-  return Math.max(1, Math.round(ms / 86400000));
-}
-
 function greeting() {
   const h = new Date().getHours();
   if (h < 12) return 'Good morning';
@@ -39,12 +34,47 @@ function statusLabel(r) {
   return r.status;
 }
 
-const shortDate = (iso) =>
-  iso
-    ? new Date(iso).toLocaleDateString('en-KE', { day: 'numeric', month: 'short' })
+const dmy = (d) =>
+  d
+    ? new Date(d + 'T00:00:00').toLocaleDateString('en-KE', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
     : '';
 
-export default function Overview({ email, onNavigate }) {
+function headline(s, months) {
+  if (!num(s.invoice_count)) {
+    return {
+      a: "Let's get",
+      b: 'started',
+      sub: 'Create your first invoice and your numbers will appear here.',
+    };
+  }
+  const cur = num(months[months.length - 1] && months[months.length - 1].collected);
+  const prev = num(months[months.length - 2] && months[months.length - 2].collected);
+  if (prev > 0 && cur > prev) {
+    return {
+      a: 'Your business is',
+      b: 'growing',
+      sub: 'You have collected more this month than last month.',
+    };
+  }
+  if (num(s.overdue_count) > 0) {
+    return {
+      a: 'Some invoices need',
+      b: 'attention',
+      sub: plural(num(s.overdue_count), 'invoice') + ' overdue. Time to follow up.',
+    };
+  }
+  return {
+    a: 'Your business at a',
+    b: 'glance',
+    sub: "Here's what's happening with your business today.",
+  };
+}
+
+export default function Overview({ onNavigate }) {
   const [state, setState] = useState({ loading: true });
 
   useEffect(() => {
@@ -60,26 +90,11 @@ export default function Overview({ email, onNavigate }) {
       if (!b.data.length) return setState({ biz: null });
 
       const biz = b.data[0];
-      const [s, od, pay, inv] = await Promise.all([
+      const [s, inv] = await Promise.all([
         supabase.rpc('dashboard_summary', { p_business: biz.id }),
         supabase
           .from('documents')
-          .select('id,doc_number,customer_name,total,amount_paid,due_date')
-          .eq('business_id', biz.id)
-          .eq('doc_type', 'invoice')
-          .in('status', ['unpaid', 'partial'])
-          .lt('due_date', todayISO())
-          .order('due_date', { ascending: true })
-          .limit(5),
-        supabase
-          .from('payments')
-          .select('id,receipt_number,amount,method,paid_at,documents(doc_number,customer_name)')
-          .eq('business_id', biz.id)
-          .order('created_at', { ascending: false })
-          .limit(5),
-        supabase
-          .from('documents')
-          .select('id,doc_number,customer_name,total,status,due_date')
+          .select('id,doc_number,customer_name,issue_date,total,status,due_date')
           .eq('business_id', biz.id)
           .eq('doc_type', 'invoice')
           .order('created_at', { ascending: false })
@@ -87,16 +102,10 @@ export default function Overview({ email, onNavigate }) {
       ]);
       if (cancelled) return;
 
-      const failed = [s, od, pay, inv].find((x) => x.error);
+      const failed = [s, inv].find((x) => x.error);
       if (failed) return setState({ error: failed.error.message });
 
-      setState({
-        biz,
-        summary: s.data,
-        overdue: od.data,
-        payments: pay.data,
-        invoices: inv.data,
-      });
+      setState({ biz, summary: s.data, invoices: inv.data });
     }
     run();
     return () => {
@@ -131,11 +140,10 @@ export default function Overview({ email, onNavigate }) {
     );
   }
 
-  const { biz, summary: s, overdue, payments, invoices } = state;
+  const { biz, summary: s, invoices } = state;
   const cur = biz.currency;
   const months = Array.isArray(s.months) ? s.months : [];
-  const max = Math.max(1, ...months.flatMap((m) => [num(m.invoiced), num(m.collected)]));
-  const hasChart = months.some((m) => num(m.invoiced) > 0 || num(m.collected) > 0);
+  const head = headline(s, months);
   const overdueCount = num(s.overdue_count);
 
   const steps = [
@@ -146,80 +154,84 @@ export default function Overview({ email, onNavigate }) {
   ];
   const allDone = steps.every((x) => x.done);
 
-  const today = new Date().toLocaleDateString('en-KE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
+  const actions = [
+    { icon: 'invoices', title: 'Create Invoice', sub: 'Generate a new invoice', go: 'Invoices' },
+    { icon: 'customers', title: 'Add Customer', sub: 'Register a new customer', go: 'Customers' },
+    { icon: 'delivery', title: 'New Delivery Note', sub: 'Record goods delivered', go: 'Delivery notes' },
+    { icon: 'payments', title: 'Record Payment', sub: 'Log a payment received', go: 'Payments' },
+  ];
 
   return (
     <div className="ov">
-      <header className="ov-head">
-        <p className="ov-date">{today}</p>
-        <h1 className="ov-title">{greeting()}</h1>
-        <p className="ov-biz">{biz.name}</p>
-      </header>
-
-      <section className="ov-hero" aria-label="Outstanding balance">
-        <p className="ov-hero-label">Outstanding</p>
-        <p className="ov-hero-amount">
-          <small>{cur}</small>
-          {fmt(s.outstanding)}
-        </p>
-        <p className="ov-hero-sub">
-          {num(s.open_count) > 0
-            ? plural(num(s.open_count), 'unpaid invoice') + ' waiting for payment'
-            : num(s.invoice_count) > 0
-            ? 'Every invoice is paid'
-            : 'No invoices yet'}
-        </p>
-        {overdueCount > 0 ? (
-          <span className="ov-chip bad">
-            {cur} {fmt(s.overdue_amount)} overdue · {plural(overdueCount, 'invoice')}
-          </span>
-        ) : (
-          num(s.invoice_count) > 0 && <span className="ov-chip good">Nothing overdue</span>
-        )}
+      <section className="ov-hero">
+        <div>
+          <p className="ov-kicker">
+            {greeting()} · {biz.name}
+          </p>
+          <h1 className="ov-title">
+            {head.a} <em>{head.b}</em>
+          </h1>
+          <p className="ov-sub">{head.sub}</p>
+          {num(s.invoice_count) > 0 && (
+            <p className="ov-meta">
+              Outstanding{' '}
+              <strong>
+                {cur} {fmt(s.outstanding)}
+              </strong>
+              {' · '}
+              {plural(num(s.open_count), 'unpaid invoice')}
+              {overdueCount > 0 && (
+                <>
+                  {' · '}
+                  <span className="ov-late">{overdueCount} overdue</span>
+                </>
+              )}
+            </p>
+          )}
+        </div>
+        <button className="ov-new" type="button" onClick={() => onNavigate('Invoices')}>
+          <Icon name="plus" size={16} />
+          New invoice
+        </button>
       </section>
 
       <section className="ov-kpis" aria-label="Key figures">
         <div className="ov-kpi">
+          <span className="ov-ico">
+            <Icon name="payments" size={18} />
+          </span>
           <p className="ov-kpi-label">Collected this month</p>
           <p className="ov-kpi-value">
             {cur} {fmt(s.collected_month)}
           </p>
-          <p className="ov-kpi-sub">All time {cur} {fmt(s.collected_total)}</p>
+          <p className="ov-kpi-sub">
+            All time {cur} {fmt(s.collected_total)}
+          </p>
         </div>
         <div className="ov-kpi">
+          <span className="ov-ico">
+            <Icon name="invoices" size={18} />
+          </span>
           <p className="ov-kpi-label">Invoiced this month</p>
           <p className="ov-kpi-value">
             {cur} {fmt(s.invoiced_month)}
           </p>
         </div>
         <div className="ov-kpi">
+          <span className="ov-ico">
+            <Icon name="quotations" size={18} />
+          </span>
           <p className="ov-kpi-label">Invoices</p>
           <p className="ov-kpi-value">{num(s.invoice_count)}</p>
           <p className="ov-kpi-sub">Cancelled not counted</p>
         </div>
         <div className="ov-kpi">
+          <span className="ov-ico">
+            <Icon name="user" size={18} />
+          </span>
           <p className="ov-kpi-label">Customers</p>
           <p className="ov-kpi-value">{num(s.customer_count)}</p>
         </div>
-      </section>
-
-      <section className="ov-actions" aria-label="Quick actions">
-        <button className="ov-act" type="button" onClick={() => onNavigate('Invoices')}>
-          New invoice
-        </button>
-        <button className="ov-act" type="button" onClick={() => onNavigate('Payments')}>
-          Record payment
-        </button>
-        <button className="ov-act" type="button" onClick={() => onNavigate('Delivery notes')}>
-          Delivery note
-        </button>
-        <button className="ov-act" type="button" onClick={() => onNavigate('Customers')}>
-          Add customer
-        </button>
       </section>
 
       {!allDone && (
@@ -243,157 +255,83 @@ export default function Overview({ email, onNavigate }) {
         </section>
       )}
 
-      <section className="ov-card">
-        <div className="ov-card-head">
-          <h2 className="ov-h">Last 6 months</h2>
-        </div>
-        {hasChart ? (
-          <>
-            <p className="ov-legend">
-              <span className="l-inv">Invoiced</span>
-              <span className="l-col">Collected</span>
-            </p>
-            <div
-              className="ov-chart"
-              role="img"
-              aria-label={months
-                .map(
-                  (m) =>
-                    m.m + ': invoiced ' + fmt(m.invoiced) + ', collected ' + fmt(m.collected)
-                )
-                .join('. ')}
-            >
-              {months.map((m, i) => (
-                <div
-                  key={m.m + i}
-                  className={i === months.length - 1 ? 'ov-col now' : 'ov-col'}
-                  title={m.m + ': invoiced ' + fmt(m.invoiced) + ', collected ' + fmt(m.collected)}
-                >
-                  <span
-                    className={num(m.invoiced) > 0 ? 'ov-bar inv' : 'ov-bar inv zero'}
-                    style={{ height: (num(m.invoiced) / max) * 100 + '%' }}
-                  />
-                  <span
-                    className={num(m.collected) > 0 ? 'ov-bar col' : 'ov-bar col zero'}
-                    style={{ height: (num(m.collected) / max) * 100 + '%' }}
-                  />
-                  <span className="ov-col-label">{m.m}</span>
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="ov-empty-note">
-            Your chart appears here once you create invoices and record payments.
-          </p>
-        )}
-      </section>
-
-      <section className="ov-card">
-        <div className="ov-card-head">
-          <h2 className="ov-h">Needs attention</h2>
-          {overdue.length > 0 && (
-            <button className="ov-link" type="button" onClick={() => onNavigate('Invoices')}>
-              All invoices
-            </button>
-          )}
-        </div>
-        {overdue.length === 0 ? (
-          <p className="ov-empty-note">No overdue invoices. Nice work.</p>
-        ) : (
-          <ul className="ov-list">
-            {overdue.map((r) => (
-              <li key={r.id}>
-                <button className="ov-row" type="button" onClick={() => onNavigate('Invoices')}>
-                  <span className="ov-row-main">
-                    <strong>{r.customer_name}</strong>
-                    <span>Invoice {r.doc_number}</span>
-                  </span>
-                  <span className="ov-row-side">
-                    <strong>
-                      {cur} {fmt(num(r.total) - num(r.amount_paid))}
-                    </strong>
-                    <span className="late">{plural(daysLate(r.due_date), 'day')} late</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="ov-card">
-        <div className="ov-card-head">
-          <h2 className="ov-h">Recent payments</h2>
-          {payments.length > 0 && (
-            <button className="ov-link" type="button" onClick={() => onNavigate('Payments')}>
-              View all
-            </button>
-          )}
-        </div>
-        {payments.length === 0 ? (
-          <p className="ov-empty-note">No payments recorded yet.</p>
-        ) : (
-          <ul className="ov-list">
-            {payments.map((p) => (
-              <li key={p.id}>
-                <button className="ov-row" type="button" onClick={() => onNavigate('Payments')}>
-                  <span className="ov-row-main">
-                    <strong>{p.documents ? p.documents.customer_name : 'Payment'}</strong>
-                    <span>
-                      Receipt {p.receipt_number} · {p.method}
-                    </span>
-                  </span>
-                  <span className="ov-row-side">
-                    <strong>
-                      {cur} {fmt(p.amount)}
-                    </strong>
-                    <span>{shortDate(p.paid_at)}</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="ov-card">
-        <div className="ov-card-head">
-          <h2 className="ov-h">Recent invoices</h2>
-          {invoices.length > 0 && (
-            <button className="ov-link" type="button" onClick={() => onNavigate('Invoices')}>
-              View all
-            </button>
-          )}
-        </div>
-        {invoices.length === 0 ? (
-          <p className="ov-empty-note">No invoices yet.</p>
-        ) : (
-          <ul className="ov-list">
-            {invoices.map((r) => {
-              const l = statusLabel(r);
-              return (
-                <li key={r.id}>
-                  <button className="ov-row" type="button" onClick={() => onNavigate('Invoices')}>
-                    <span className="ov-row-main">
-                      <strong>{r.customer_name}</strong>
-                      <span>Invoice {r.doc_number}</span>
-                    </span>
-                    <span className="ov-row-side">
-                      <strong>
+      <div className="ov-two">
+        <section className="ov-card">
+          <div className="ov-card-head">
+            <h2 className="ov-h">Recent Invoices</h2>
+            {invoices.length > 0 && (
+              <button className="ov-link" type="button" onClick={() => onNavigate('Invoices')}>
+                View all <Icon name="arrow" size={14} />
+              </button>
+            )}
+          </div>
+          {invoices.length === 0 ? (
+            <p className="ov-empty-note">No invoices yet.</p>
+          ) : (
+            <table className="ov-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Customer</th>
+                  <th className="hide-sm">Date</th>
+                  <th className="r">Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoices.map((r) => {
+                  const l = statusLabel(r);
+                  return (
+                    <tr key={r.id}>
+                      <td>{r.doc_number}</td>
+                      <td>{r.customer_name}</td>
+                      <td className="hide-sm">{dmy(r.issue_date)}</td>
+                      <td className="r">
                         {cur} {fmt(r.total)}
-                      </strong>
-                      <em className={'badge ' + l}>{l}</em>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+                      </td>
+                      <td>
+                        <span className={'pill ' + l}>{l}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </section>
 
-      <p className="ov-foot">Signed in as {email}</p>
+        <section className="ov-card">
+          <div className="ov-card-head">
+            <h2 className="ov-h">Quick Actions</h2>
+          </div>
+          <ul className="ov-qa-list">
+            {actions.map((a) => (
+              <li key={a.title}>
+                <button className="ov-qa" type="button" onClick={() => onNavigate(a.go)}>
+                  <span className="ov-ico">
+                    <Icon name={a.icon} size={18} />
+                  </span>
+                  <span className="ov-qa-text">
+                    <strong>{a.title}</strong>
+                    <span>{a.sub}</span>
+                  </span>
+                  <Icon name="arrow" size={16} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <section className="ov-banner">
+        <span className="ov-ico">
+          <Icon name="shield" size={20} />
+        </span>
+        <div>
+          <strong>Your records are private</strong>
+          <span>Each business can only see its own customers, invoices and payments.</span>
+        </div>
+      </section>
     </div>
   );
 }
