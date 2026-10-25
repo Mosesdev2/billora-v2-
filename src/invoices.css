@@ -1,0 +1,144 @@
+.inv-form {
+  max-width: 640px;
+}
+
+.inv-item-card {
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.inv-item-card label {
+  margin-bottom: 10px;
+}
+
+.inv-item-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.inv-item-foot strong {
+  color: var(--text);
+}
+
+.totals {
+  margin: 20px 0;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.totals .line {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 15px;
+}
+
+.totals .line.grand {
+  margin-top: 6px;
+  padding-top: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  border-top: 1px solid var(--line);
+}
+
+.totals .inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.totals .inputs label {
+  margin: 0;
+}
+
+.inv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.inv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 0;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.inv-row:hover {
+  background: #efebde;
+}
+
+.inv-row:focus-visible {
+  outline: 2px solid var(--charcoal);
+  outline-offset: -2px;
+}
+
+.inv-main,
+.inv-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.inv-side {
+  align-items: flex-end;
+}
+
+.inv-main span {
+  overflow: hidden;
+  font-size: 14px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid var(--line);
+}
+
+.badge.paid {
+  color: #1e5e22;
+  background: #e5f2e6;
+  border-color: #b7d9ba;
+}
+
+.badge.partial {
+  color: #7a5200;
+  background: #fbf0d4;
+  border-color: #e8d29b;
+}
+
+.badge.overdue {
+  color: var(--danger);
+  background: #fbeceb;
+  border-color: #efc0bc;
+}
+
+.badge.cancelled {
+  color: var(--muted);
+  background: #eceae3;
+}
