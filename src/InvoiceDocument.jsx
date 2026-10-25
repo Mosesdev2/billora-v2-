@@ -42,6 +42,7 @@ function Amount({ value }) {
 export default function InvoiceDocument({ bizId, id, onBack }) {
   const [biz, setBiz] = useState(null);
   const [doc, setDoc] = useState(null);
+  const [deliveryNos, setDeliveryNos] = useState('');
   const [color, setColor] = useState(BLUE);
   const [savedColor, setSavedColor] = useState(BLUE);
   const [saving, setSaving] = useState(false);
@@ -56,12 +57,20 @@ export default function InvoiceDocument({ bizId, id, onBack }) {
         .eq('id', bizId)
         .single(),
       supabase.from('documents').select('*').eq('id', id).single(),
-    ]).then(([b, d]) => {
+      supabase
+        .from('delivery_notes')
+        .select('note_number')
+        .eq('invoice_id', id)
+        .order('created_at', { ascending: true }),
+    ]).then(([b, d, n]) => {
       if (cancelled) return;
       if (b.error) return setError(b.error.message);
       if (d.error) return setError(d.error.message);
       setBiz(b.data);
       setDoc(d.data);
+      if (!n.error && n.data) {
+        setDeliveryNos(n.data.map((x) => x.note_number).join(', '));
+      }
       const c = HEX.test(b.data.brand_color || '') ? b.data.brand_color : BLUE;
       setColor(c);
       setSavedColor(c);
@@ -166,7 +175,7 @@ export default function InvoiceDocument({ bizId, id, onBack }) {
           </div>
           <div className="doc-box">
             <div className="doc-row"><b>Date:</b><span>{fmtDate(doc.issue_date)}</span></div>
-            <div className="doc-row"><b>Delivery No.</b><span /></div>
+            <div className="doc-row"><b>Delivery No.</b><span>{deliveryNos}</span></div>
             <div className="doc-row"><b>L.P.O No.</b><span /></div>
           </div>
         </section>
