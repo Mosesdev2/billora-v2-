@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
 import './document.css';
 
+const BLUE = '#002ca0';
 const COLORS = [
-  { name: 'Blue', hex: '#1f3fae' },
+  { name: 'Blue', hex: BLUE },
   { name: 'Red', hex: '#c0201f' },
   { name: 'Green', hex: '#1b7f4b' },
   { name: 'Black', hex: '#171914' },
 ];
 const HEX = /^#[0-9a-fA-F]{6}$/;
-const MIN_ROWS = 8;
+const MIN_ROWS = 10;
 
 const money = (n) =>
   Number(n || 0).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -28,26 +29,11 @@ function fmtDate(d) {
   });
 }
 
-function todayISO() {
-  const d = new Date();
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().slice(0, 10);
-}
-
-function statusOf(doc) {
-  if (doc.status === 'paid' || doc.status === 'cancelled') return doc.status;
-  if (doc.due_date && doc.due_date < todayISO()) return 'overdue';
-  return doc.status;
-}
-
-function Amount({ value, minus }) {
+function Amount({ value }) {
   const [w, c] = split(value);
   return (
     <>
-      <td className="r">
-        {minus ? '- ' : ''}
-        {w}
-      </td>
+      <td className="r">{w}</td>
       <td className="c">{c}</td>
     </>
   );
@@ -56,8 +42,8 @@ function Amount({ value, minus }) {
 export default function InvoiceDocument({ bizId, id, onBack }) {
   const [biz, setBiz] = useState(null);
   const [doc, setDoc] = useState(null);
-  const [color, setColor] = useState('#1f3fae');
-  const [savedColor, setSavedColor] = useState('#1f3fae');
+  const [color, setColor] = useState(BLUE);
+  const [savedColor, setSavedColor] = useState(BLUE);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -76,7 +62,7 @@ export default function InvoiceDocument({ bizId, id, onBack }) {
       if (d.error) return setError(d.error.message);
       setBiz(b.data);
       setDoc(d.data);
-      const c = HEX.test(b.data.brand_color || '') ? b.data.brand_color : '#1f3fae';
+      const c = HEX.test(b.data.brand_color || '') ? b.data.brand_color : BLUE;
       setColor(c);
       setSavedColor(c);
     });
@@ -121,11 +107,13 @@ export default function InvoiceDocument({ bizId, id, onBack }) {
   const items = Array.isArray(doc.items) ? doc.items : [];
   const blanks = Math.max(0, MIN_ROWS - items.length);
   const balance = Number(doc.total) - Number(doc.amount_paid);
-  const showBreakdown = Number(doc.discount) > 0 || Number(doc.tax) > 0;
+  const showExtra =
+    Number(doc.discount) > 0 || Number(doc.tax) > 0 || Number(doc.amount_paid) > 0;
   const stamp = doc.status === 'paid' ? 'Paid' : doc.status === 'cancelled' ? 'Cancelled' : '';
   const contact = [
     biz.phone && 'Cell: ' + biz.phone,
     biz.email && 'Email: ' + biz.email,
+    biz.tax_pin && 'PIN: ' + biz.tax_pin,
   ]
     .filter(Boolean)
     .join('   ');
@@ -168,19 +156,18 @@ export default function InvoiceDocument({ bizId, id, onBack }) {
           <h2 className="doc-biz">{biz.name}</h2>
           {biz.address && <p className="doc-line">{biz.address}</p>}
           {contact && <p className="doc-line">{contact}</p>}
-          {biz.tax_pin && <p className="doc-line">KRA PIN: {biz.tax_pin}</p>}
         </header>
 
         <section className="doc-boxes">
           <div className="doc-box">
             <div className="doc-row"><b>Ms:</b><span>{doc.customer_name}</span></div>
-            <div className="doc-row"><b>Tel:</b><span>{doc.customer_phone}</span></div>
-            <div className="doc-row"><b>Email:</b><span>{doc.customer_email}</span></div>
+            <div className="doc-row"><span>{doc.customer_phone}</span></div>
+            <div className="doc-row"><span>{doc.customer_email}</span></div>
           </div>
           <div className="doc-box">
             <div className="doc-row"><b>Date:</b><span>{fmtDate(doc.issue_date)}</span></div>
-            <div className="doc-row"><b>Due:</b><span>{fmtDate(doc.due_date)}</span></div>
-            <div className="doc-row"><b>Status:</b><span className="cap">{statusOf(doc)}</span></div>
+            <div className="doc-row"><b>Delivery No.</b><span /></div>
+            <div className="doc-row"><b>L.P.O No.</b><span /></div>
           </div>
         </section>
 
@@ -223,49 +210,54 @@ export default function InvoiceDocument({ bizId, id, onBack }) {
               ))}
             </tbody>
             <tfoot>
-              {showBreakdown && (
-                <>
-                  <tr>
-                    <td colSpan={3} className="lbl">Subtotal</td>
-                    <Amount value={doc.subtotal} />
-                  </tr>
-                  {Number(doc.discount) > 0 && (
-                    <tr>
-                      <td colSpan={3} className="lbl">Discount</td>
-                      <Amount value={doc.discount} minus />
-                    </tr>
-                  )}
-                  <tr>
-                    <td colSpan={3} className="lbl">Tax</td>
-                    <Amount value={doc.tax} />
-                  </tr>
-                </>
-              )}
               <tr className="total">
                 <td className="small">E.&amp;O.E</td>
                 <td>
                   No. <span className="no">{doc.doc_number}</span>
                 </td>
-                <td className="c">TOTAL</td>
+                <td className="lbl">TOTAL</td>
                 <Amount value={doc.total} />
-              </tr>
-              <tr>
-                <td colSpan={3} className="lbl">Amount paid</td>
-                <Amount value={doc.amount_paid} />
-              </tr>
-              <tr className="balance">
-                <td colSpan={3} className="lbl">Balance due</td>
-                <Amount value={balance} />
               </tr>
             </tfoot>
           </table>
         </div>
 
+        {showExtra && (
+          <div className="doc-extra">
+            <div className="line">
+              <span>Subtotal</span>
+              <span>{money(doc.subtotal)}</span>
+            </div>
+            {Number(doc.discount) > 0 && (
+              <div className="line">
+                <span>Discount</span>
+                <span>- {money(doc.discount)}</span>
+              </div>
+            )}
+            {Number(doc.tax) > 0 && (
+              <div className="line">
+                <span>Tax</span>
+                <span>{money(doc.tax)}</span>
+              </div>
+            )}
+            {Number(doc.amount_paid) > 0 && (
+              <>
+                <div className="line">
+                  <span>Amount paid</span>
+                  <span>{money(doc.amount_paid)}</span>
+                </div>
+                <div className="line strong">
+                  <span>Balance</span>
+                  <span>{money(balance)}</span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         {doc.notes && <p className="doc-notes">{doc.notes}</p>}
 
-        <div className="doc-foot">
-          {doc.due_date ? 'Payment due by ' + fmtDate(doc.due_date) : 'Accounts are due on demand'}
-        </div>
+        <div className="doc-foot">Accounts are due on Demand</div>
       </article>
     </div>
   );
