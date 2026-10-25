@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { supabase, supabaseReady } from './supabase.js';
 import AuthForm from './AuthForm.jsx';
+import BusinessProfile from './BusinessProfile.jsx';
 
-const sections = ['Overview', 'Invoices', 'Quotations', 'Delivery notes', 'Customers'];
+const sections = ['Overview', 'Invoices', 'Quotations', 'Delivery notes', 'Customers', 'Business'];
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -61,7 +62,9 @@ function Dashboard({ email }) {
 
       <main className="content">
         <h1>{active}</h1>
-        {active === 'Overview' ? (
+        {active === 'Business' ? (
+          <BusinessProfile />
+        ) : active === 'Overview' ? (
           <p>Signed in as {email}.</p>
         ) : (
           <p>{active} will be built here soon.</p>
