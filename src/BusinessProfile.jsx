@@ -2,8 +2,16 @@ import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
 import './business.css';
 
-const EMPTY = { name: '', email: '', phone: '', address: '', tax_pin: '', currency: 'KES' };
-const FIELDS = 'id,name,email,phone,address,tax_pin,currency';
+const EMPTY = {
+  name: '',
+  tagline: '',
+  email: '',
+  phone: '',
+  address: '',
+  tax_pin: '',
+  currency: 'KES',
+};
+const FIELDS = 'id,name,tagline,email,phone,address,tax_pin,currency';
 
 function fromRow(row) {
   const out = { ...EMPTY };
@@ -66,6 +74,7 @@ export default function BusinessProfile() {
 
     const payload = {
       name,
+      tagline: form.tagline.trim(),
       email: form.email.trim(),
       phone: form.phone.trim(),
       address: form.address.trim(),
@@ -107,6 +116,16 @@ export default function BusinessProfile() {
       <label>
         <span>Business name</span>
         <input value={form.name} onChange={set('name')} maxLength={100} required />
+      </label>
+
+      <label>
+        <span>Business description (optional)</span>
+        <input
+          value={form.tagline}
+          onChange={set('tagline')}
+          maxLength={80}
+          placeholder="e.g. Dealers in all electronics"
+        />
       </label>
 
       <label>
