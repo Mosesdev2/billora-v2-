@@ -317,4 +317,11 @@
     width: 8% !important;
   }
 }
-  
+  .content .doc-sheet .doc-tag {
+  margin-top: 4px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 700;
+  color: #c0201f;
+}
