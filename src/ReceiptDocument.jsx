@@ -42,7 +42,7 @@ export default function ReceiptDocument({ bizId, id, onBack }) {
     async function run() {
       const b = await supabase
         .from('businesses')
-        .select('id,name,email,phone,address,tax_pin,currency,brand_color')
+        .select('id,name,tagline,email,phone,address,tax_pin,currency,brand_color')
         .eq('id', bizId)
         .single();
       if (b.error) return !cancelled && setError(b.error.message);
@@ -131,6 +131,7 @@ export default function ReceiptDocument({ bizId, id, onBack }) {
         <header className="doc-head">
           <span className="doc-pill">RECEIPT</span>
           <h2 className="doc-biz">{biz.name}</h2>
+          {biz.tagline && <p className="doc-tag">{biz.tagline}</p>}
           {biz.address && <p className="doc-line">{biz.address}</p>}
           {contact && <p className="doc-line">{contact}</p>}
         </header>
