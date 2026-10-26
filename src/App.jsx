@@ -7,6 +7,7 @@ import Customers from './Customers.jsx';
 import Invoices from './Invoices.jsx';
 import Payments from './Payments.jsx';
 import DeliveryNotes from './DeliveryNotes.jsx';
+import BlankForms from './BlankForms.jsx';
 import Icon from './Icon.jsx';
 import './shell.css';
 
@@ -17,6 +18,7 @@ const sections = [
   { name: 'Quotations', icon: 'quotations' },
   { name: 'Delivery notes', icon: 'delivery' },
   { name: 'Customers', icon: 'customers' },
+  { name: 'Blank forms', icon: 'invoices' },
   { name: 'Business', icon: 'business' },
 ];
 
@@ -140,6 +142,8 @@ function Dashboard({ email }) {
                 <Payments />
               ) : active === 'Delivery notes' ? (
                 <DeliveryNotes />
+              ) : active === 'Blank forms' ? (
+                <BlankForms />
               ) : (
                 <p>{active} will be built here soon.</p>
               )}
