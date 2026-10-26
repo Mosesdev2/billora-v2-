@@ -41,7 +41,7 @@ export default function BlankForms() {
     let cancelled = false;
     supabase
       .from('businesses')
-      .select('name,email,phone,address,tax_pin,currency,brand_color')
+      .select('name,tagline,email,phone,address,tax_pin,currency,brand_color')
       .order('created_at', { ascending: true })
       .limit(1)
       .then(({ data, error: err }) => {
@@ -160,6 +160,7 @@ export default function BlankForms() {
           {showBiz && biz && (
             <>
               <h2 className="doc-biz">{biz.name}</h2>
+              {biz.tagline && <p className="doc-tag">{biz.tagline}</p>}
               {biz.address && <p className="doc-line">{biz.address}</p>}
               {contact && <p className="doc-line">{contact}</p>}
             </>
