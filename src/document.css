@@ -303,4 +303,18 @@
     height: 10mm;
   }
 }
+.doc-grid td.r,
+.doc-grid th {
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .doc-grid colgroup:has(col:nth-child(5)) col:nth-child(3) {
+    width: 23% !important;
+  }
+
+  .doc-grid colgroup:has(col:nth-child(5)) col:nth-child(5) {
+    width: 8% !important;
+  }
+}
   
