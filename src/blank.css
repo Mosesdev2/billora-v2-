@@ -1,0 +1,60 @@
+.blank-opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.blank-opts .num span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.blank-opts .num input {
+  width: 130px;
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.blank-opts .num input:focus-visible {
+  outline: none;
+  border-color: var(--charcoal);
+  box-shadow: 0 0 0 3px rgba(198, 244, 50, 0.55);
+}
+
+.blank-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 9px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.blank-check input {
+  width: 18px;
+  height: 18px;
+}
+
+.blank-tip {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.blank .doc-grid td {
+  height: 40px;
+}
+
+.blank .doc-row {
+  min-height: 38px;
+}
