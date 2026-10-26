@@ -282,4 +282,25 @@
   padding-left: 2px;
   padding-right: 2px;
 }
+/* Portrait page, A4 proportions */
+.doc-sheet {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 210 / 297;
+}
+
+.doc-sheet .doc-foot {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.doc-sheet .doc-grid tbody td {
+  height: 34px;
+}
+
+@media print {
+  .doc-sheet .doc-grid tbody td {
+    height: 10mm;
+  }
+}
   
