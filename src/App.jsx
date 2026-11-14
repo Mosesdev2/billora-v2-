@@ -8,6 +8,7 @@ import Invoices from './Invoices.jsx';
 import Payments from './Payments.jsx';
 import DeliveryNotes from './DeliveryNotes.jsx';
 import BlankForms from './BlankForms.jsx';
+import TemplatePreview from './TemplatePreview.jsx';
 import Icon from './Icon.jsx';
 import './shell.css';
 
@@ -19,6 +20,7 @@ const sections = [
   { name: 'Delivery notes', icon: 'delivery' },
   { name: 'Customers', icon: 'customers' },
   { name: 'Blank forms', icon: 'invoices' },
+  { name: 'Templates', icon: 'invoices' },
   { name: 'Business', icon: 'business' },
 ];
 
@@ -144,6 +146,8 @@ function Dashboard({ email }) {
                 <DeliveryNotes />
               ) : active === 'Blank forms' ? (
                 <BlankForms />
+              ) : active === 'Templates' ? (
+                <TemplatePreview />
               ) : (
                 <p>{active} will be built here soon.</p>
               )}
