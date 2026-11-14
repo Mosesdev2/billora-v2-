@@ -7,6 +7,7 @@ export default function DocumentRenderer({ template, business = {}, data = {} })
   const fields = c.fields || [];
   const extras = (c.extras || []).filter((e) => e.enabled);
   const items = data.items || [];
+  const hasMoney = fields.some((f) => f.type === "money");
 
   const subtotal = items.reduce(
     (sum, it) => sum + Number(it.qty || 1) * Number(it.price || 0),
@@ -74,14 +75,16 @@ export default function DocumentRenderer({ template, business = {}, data = {} })
         </tbody>
       </table>
 
-      <div style={{ marginTop: 12, textAlign: "right" }}>
-        <div>Subtotal: {money(subtotal)}</div>
-        {discount > 0 && <div>Discount: -{money(discount)}</div>}
-        {tax > 0 && <div>VAT 16%: {money(tax)}</div>}
-        <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>
-          Total: {money(total)}
+      {hasMoney && (
+        <div style={{ marginTop: 12, textAlign: "right" }}>
+          <div>Subtotal: {money(subtotal)}</div>
+          {discount > 0 && <div>Discount: -{money(discount)}</div>}
+          {tax > 0 && <div>VAT 16%: {money(tax)}</div>}
+          <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>
+            Total: {money(total)}
+          </div>
         </div>
-      </div>
+      )}
 
       {extras.length > 0 && (
         <div style={{ marginTop: 12, color: "#444" }}>
