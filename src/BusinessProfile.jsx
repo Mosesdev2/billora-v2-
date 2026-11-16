@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
+import BusinessTypePicker, { businessTypes } from './BusinessTypePicker.jsx';
 import './business.css';
 
 const EMPTY = {
@@ -9,9 +10,12 @@ const EMPTY = {
   phone: '',
   address: '',
   tax_pin: '',
+  till_number: '',
   currency: 'KES',
+  business_type: '',
 };
-const FIELDS = 'id,name,tagline,email,phone,address,tax_pin,currency';
+const FIELDS =
+  'id,name,tagline,email,phone,address,tax_pin,till_number,currency,business_type';
 
 function fromRow(row) {
   const out = { ...EMPTY };
@@ -24,6 +28,7 @@ function fromRow(row) {
 export default function BusinessProfile() {
   const [id, setId] = useState(null);
   const [form, setForm] = useState(EMPTY);
+  const [step, setStep] = useState('form');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -41,6 +46,8 @@ export default function BusinessProfile() {
       else if (data.length) {
         setId(data[0].id);
         setForm(fromRow(data[0]));
+      } else {
+        setStep('type');
       }
       setLoading(false);
     }
@@ -60,6 +67,10 @@ export default function BusinessProfile() {
 
     const name = form.name.trim();
     const pin = form.tax_pin.trim().toUpperCase();
+    if (!form.business_type) {
+      setMsg({ type: 'error', text: 'Choose your business type first.' });
+      return;
+    }
     if (!name) {
       setMsg({ type: 'error', text: 'Enter your business name.' });
       return;
@@ -79,7 +90,9 @@ export default function BusinessProfile() {
       phone: form.phone.trim(),
       address: form.address.trim(),
       tax_pin: pin,
+      till_number: form.till_number.trim(),
       currency: form.currency,
+      business_type: form.business_type,
     };
 
     const query = id
@@ -99,12 +112,47 @@ export default function BusinessProfile() {
 
   if (loading) return <p>Loading...</p>;
 
+  if (step === 'type') {
+    return (
+      <div className="biz-form">
+        <BusinessTypePicker
+          value={form.business_type}
+          onChange={(v) => setForm({ ...form, business_type: v })}
+        />
+        <button
+          className="btn-primary"
+          type="button"
+          disabled={!form.business_type}
+          onClick={() => setStep('form')}
+          style={{ marginTop: 16 }}
+        >
+          Continue
+        </button>
+        {id && (
+          <button type="button" onClick={() => setStep('form')} style={{ marginTop: 8 }}>
+            Cancel
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  const typeInfo = businessTypes.find((t) => t.id === form.business_type);
+
   return (
     <form className="biz-form" onSubmit={save}>
       <p>
         {id
           ? 'These details will appear on your documents.'
-          : 'Set up your business. This is the first step.'}
+          : 'Almost done. Add your business details.'}
+      </p>
+
+      <p>
+        Business type:{' '}
+        <strong>{typeInfo ? typeInfo.icon + ' ' + typeInfo.title : 'Not set'}</strong>{' '}
+        <button type="button" onClick={() => setStep('type')}>
+          Change
+        </button>
       </p>
 
       {msg && (
@@ -154,10 +202,16 @@ export default function BusinessProfile() {
         <textarea value={form.address} onChange={set('address')} />
       </label>
 
-      <label>
-        <span>KRA PIN (optional)</span>
-        <input value={form.tax_pin} onChange={set('tax_pin')} maxLength={11} />
-      </label>
+      <div className="row">
+        <label>
+          <span>KRA PIN (optional)</span>
+          <input value={form.tax_pin} onChange={set('tax_pin')} maxLength={11} />
+        </label>
+        <label>
+          <span>Till number (optional)</span>
+          <input value={form.till_number} onChange={set('till_number')} maxLength={12} />
+        </label>
+      </div>
 
       <button className="btn-primary" type="submit" disabled={busy}>
         {busy ? 'Saving...' : id ? 'Save changes' : 'Create business'}
