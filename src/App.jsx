@@ -9,12 +9,14 @@ import Payments from './Payments.jsx';
 import DeliveryNotes from './DeliveryNotes.jsx';
 import BlankForms from './BlankForms.jsx';
 import TemplatePreview from './TemplatePreview.jsx';
+import DocPage from './DocPage.jsx';
 import Icon from './Icon.jsx';
 import './shell.css';
 
 const sections = [
   { name: 'Overview', icon: 'overview' },
   { name: 'Invoices', icon: 'invoices' },
+  { name: 'Receipts', icon: 'invoices' },
   { name: 'Payments', icon: 'payments' },
   { name: 'Quotations', icon: 'quotations' },
   { name: 'Delivery notes', icon: 'delivery' },
@@ -139,11 +141,13 @@ function Dashboard({ email }) {
               ) : active === 'Customers' ? (
                 <Customers />
               ) : active === 'Invoices' ? (
-                <Invoices />
+                <DocPage docType="invoice" Legacy={Invoices} onNavigate={go} />
+              ) : active === 'Receipts' ? (
+                <DocPage docType="receipt" onNavigate={go} />
               ) : active === 'Payments' ? (
                 <Payments />
               ) : active === 'Delivery notes' ? (
-                <DeliveryNotes />
+                <DocPage docType="delivery_note" Legacy={DeliveryNotes} onNavigate={go} />
               ) : active === 'Blank forms' ? (
                 <BlankForms />
               ) : active === 'Templates' ? (
