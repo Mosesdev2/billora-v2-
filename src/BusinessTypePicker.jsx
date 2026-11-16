@@ -1,5 +1,6 @@
 export const businessTypes = [
-  { id: 'retail', icon: '🛒', title: 'Retail shop', desc: 'Supermarket, kiosk, boutique, pharmacy' },
+  { id: 'minimarket', icon: '🧺', title: 'Minimarket', desc: 'Small supermarket, grocery, mini mart' },
+  { id: 'retail', icon: '🛒', title: 'Retail shop', desc: 'Kiosk, boutique, pharmacy' },
   { id: 'wholesale', icon: '📦', title: 'Wholesale', desc: 'Bulk supply to shops and businesses' },
   { id: 'hardware', icon: '🔧', title: 'Hardware', desc: 'Building materials, tools, paint' },
   { id: 'electronics', icon: '📱', title: 'Electronics', desc: 'Phones, chargers, appliances' },
@@ -18,15 +19,10 @@ export default function BusinessTypePicker({ value, onChange }) {
         We will set up the right receipts for you. You can customize them later.
       </p>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 12,
-        }}
-      >
-        {businessTypes.map((t) => {
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        {businessTypes.map((t, i) => {
           const on = value === t.id;
+          const lastOdd = businessTypes.length % 2 === 1 && i === businessTypes.length - 1;
           return (
             <button
               key={t.id}
@@ -34,6 +30,7 @@ export default function BusinessTypePicker({ value, onChange }) {
               aria-pressed={on}
               onClick={() => onChange(t.id)}
               style={{
+                gridColumn: lastOdd ? 'span 2' : undefined,
                 position: 'relative',
                 textAlign: 'left',
                 padding: 14,
