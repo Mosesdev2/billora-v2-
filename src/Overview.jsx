@@ -82,7 +82,7 @@ export default function Overview({ onNavigate }) {
     async function run() {
       const b = await supabase
         .from('businesses')
-        .select('id,name,currency')
+        .select('id,name,currency,business_type')
         .order('created_at', { ascending: true })
         .limit(1);
       if (cancelled) return;
@@ -146,8 +146,15 @@ export default function Overview({ onNavigate }) {
   const head = headline(s, months);
   const overdueCount = num(s.overdue_count);
 
+  const type = biz.business_type || '';
+  const showDelivery = !['retail', 'electronics'].includes(type);
+  const showTemplates = !!type && type !== 'logistics';
+
   const steps = [
     { text: 'Set up your business profile', done: true, go: 'Business' },
+    ...(type
+      ? []
+      : [{ text: 'Choose your business type', done: false, go: 'Business' }]),
     { text: 'Add your first customer', done: num(s.customer_count) > 0, go: 'Customers' },
     { text: 'Create your first invoice', done: num(s.invoice_count) > 0, go: 'Invoices' },
     { text: 'Record your first payment', done: num(s.collected_total) > 0, go: 'Payments' },
@@ -157,8 +164,27 @@ export default function Overview({ onNavigate }) {
   const actions = [
     { icon: 'invoices', title: 'Create Invoice', sub: 'Generate a new invoice', go: 'Invoices' },
     { icon: 'customers', title: 'Add Customer', sub: 'Register a new customer', go: 'Customers' },
-    { icon: 'delivery', title: 'New Delivery Note', sub: 'Record goods delivered', go: 'Delivery notes' },
+    ...(showDelivery
+      ? [
+          {
+            icon: 'delivery',
+            title: 'New Delivery Note',
+            sub: 'Record goods delivered',
+            go: 'Delivery notes',
+          },
+        ]
+      : []),
     { icon: 'payments', title: 'Record Payment', sub: 'Log a payment received', go: 'Payments' },
+    ...(showTemplates
+      ? [
+          {
+            icon: 'invoices',
+            title: 'Receipt Template',
+            sub: 'View and customize your receipt',
+            go: 'Templates',
+          },
+        ]
+      : []),
   ];
 
   return (
